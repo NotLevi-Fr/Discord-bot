@@ -29,8 +29,9 @@ class TestBot(commands.Bot):
         # Load command extensions
         await self.load_extension("commands.role_management")
         await self.load_extension("commands.webhook_management")
+        await self.load_extension("commands.help_command")
         print("✅ Bot setup complete.")
-        print("✅ Loaded command extensions: role_management, webhook_management")
+        print("✅ Loaded command extensions: role_management, webhook_management, help_command")
 
     async def on_ready(self):
         await on_ready_handler(self)
