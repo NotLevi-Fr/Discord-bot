@@ -107,9 +107,9 @@ async def info(ctx):
 async def basic_command_error(ctx, error):
     if isinstance(error, commands.MissingPermissions):
         missing_perms = [perm.replace('_', ' ').title() for perm in error.missing_permissions]
-        await ctx.send(f"❌ Missing required permissions: {', '.join(missing_perms)}")
+        await ctx.send(f"Missing required permissions: {', '.join(missing_perms)}")
     elif isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send("❌ Please provide all required arguments. Use `!help` for command usage.")
+        await ctx.send(" Please provide all required arguments. Use `!help` for command usage.")
 
 if __name__ == "__main__":
     bot.run(DISCORD_TOKEN, log_handler=handler, log_level=logging.INFO)

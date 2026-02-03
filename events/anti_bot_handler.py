@@ -26,3 +26,6 @@ async def anti_bot_message_handler(message: discord.Message):
     
     return False
 
+
+
+

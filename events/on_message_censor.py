@@ -20,3 +20,6 @@ async def censor_handler(message: discord.Message, bot: discord.Client):
             # Bot doesn't have permission to delete messages
             print(f"Could not delete message from {message.author.name}")
 
+
+
+

@@ -16,3 +16,6 @@ async def welcome_handler(member: discord.Member):
             # Can't send DM, just log it
             print(f"Could not send welcome message to {member.name}")
 
+
+
+

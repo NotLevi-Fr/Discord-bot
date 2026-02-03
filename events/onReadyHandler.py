@@ -6,3 +6,6 @@ async def on_ready_handler(bot: discord.Client):
     print(f'✅ Connected to {len(bot.guilds)} guild(s)')
     print('✅ Bot is ready!')
 
+
+
+
