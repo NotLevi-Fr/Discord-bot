@@ -11,7 +11,7 @@ from events.anti_bot_handler import anti_bot_join_handler, anti_bot_message_hand
 load_dotenv()
 
 # Setup logging
-handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
+handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 
 # Configure intents
 intents = discord.Intents.default()
@@ -20,21 +20,19 @@ intents.guilds = True
 intents.message_content = True
 intents.members = True
 intents.reactions = True
-
+intents.voice_states = True
 
 class TestBot(commands.Bot):
     def __init__(self):
-        super().__init__(command_prefix="!", intents=intents)
+        super().__init__(command_prefix='!', intents=intents)
 
     async def setup_hook(self):
         # Load command extensions
         await self.load_extension("commands.role_management")
         await self.load_extension("commands.webhook_management")
-        await self.load_extension("commands.help_command")
+        await self.load_extension("commands.music")
         print("✅ Bot setup complete.")
-        print(
-            "✅ Loaded command extensions: role_management, webhook_management, help_command"
-        )
+        print("✅ Loaded command extensions: role_management, webhook_management, music")
 
     async def on_ready(self):
         await on_ready_handler(self)
@@ -42,12 +40,12 @@ class TestBot(commands.Bot):
     async def on_message(self, message: discord.Message):
         if message.author == self.user:
             return
-
+        
         # Anti-bot spam protection
         spam_detected = await anti_bot_message_handler(message)
         if spam_detected:
             return  # Don't process commands if spam was detected
-
+        
         # Message censorship
         await censor_handler(message=message, bot=self)
         await self.process_commands(message)
@@ -59,9 +57,7 @@ class TestBot(commands.Bot):
             # Only send welcome if not a raid
             await welcome_handler(member)
 
-
 bot = TestBot()
-
 
 # Basic commands
 @bot.command()
@@ -70,24 +66,20 @@ async def hello(ctx):
     """Say hello to the bot"""
     await ctx.send(f"Hello {ctx.author.mention}!")
 
-
 @bot.command()
 @commands.has_permissions(
     view_channel=True,
     send_messages=True,
     embed_links=True,
     add_reactions=True,
-    use_external_emojis=True,
+    use_external_emojis=True
 )
 async def poll(ctx, *, question):
     """Create a poll with thumbs up/down reactions"""
-    embed = discord.Embed(
-        title="New Poll", description=question, color=discord.Color.blue()
-    )
+    embed = discord.Embed(title="New Poll", description=question, color=discord.Color.blue())
     poll_message = await ctx.send(embed=embed)
     await poll_message.add_reaction("👍")
     await poll_message.add_reaction("👎")
-
 
 @bot.command()
 @commands.has_permissions(view_channel=True, send_messages=True)
@@ -96,7 +88,6 @@ async def ping(ctx):
     latency = round(bot.latency * 1000)
     await ctx.send(f"Pong! Latency: {latency}ms")
 
-
 @bot.command()
 @commands.has_permissions(view_channel=True, send_messages=True, embed_links=True)
 async def info(ctx):
@@ -104,13 +95,12 @@ async def info(ctx):
     embed = discord.Embed(
         title="Bot Information",
         description="A test Discord bot",
-        color=discord.Color.green(),
+        color=discord.Color.green()
     )
     embed.add_field(name="Server", value=ctx.guild.name, inline=True)
     embed.add_field(name="Members", value=ctx.guild.member_count, inline=True)
     embed.add_field(name="Bot User", value=bot.user.name, inline=True)
     await ctx.send(embed=embed)
-
 
 @hello.error
 @poll.error
@@ -118,15 +108,11 @@ async def info(ctx):
 @info.error
 async def basic_command_error(ctx, error):
     if isinstance(error, commands.MissingPermissions):
-        missing_perms = [
-            perm.replace("_", " ").title() for perm in error.missing_permissions
-        ]
+        missing_perms = [perm.replace('_', ' ').title() for perm in error.missing_permissions]
         await ctx.send(f"Missing required permissions: {', '.join(missing_perms)}")
     elif isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send(
-            " Please provide all required arguments. Use `!help` for command usage."
-        )
-
+        await ctx.send(" Please provide all required arguments. Use `!help` for command usage.")
 
 if __name__ == "__main__":
     bot.run(DISCORD_TOKEN, log_handler=handler, log_level=logging.INFO)
+
